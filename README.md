@@ -6,11 +6,12 @@ Information such as store name, phone number, operating hours, etc.
 This crawler was **last run successfully in June 2020**. The crawler would need to be tested and changed on a regular 
 interval to make sure it still works.
 
-See the `results` folder for the output of the
+See the `results` folder for the crawler output.
 
 ## Notes
 
-* For t1 was not working because the `robots.txt` was being misread. While `robots.txt` allowed the specific URL to be accessed by scrawlers, scapy did not read that correctly.
+* Either crawler 1 or 2 was not working because the `robots.txt` was being misread. While the website's `robots.txt` 
+  allowed the specific URL to be accessed by crawlers, `scapy` did not read that correctly.
     * Workaround: set `ROBOTSTXT_OBEY` to `False` in `settings.py`
     * Further investigation needed. 
 
