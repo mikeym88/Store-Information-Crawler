@@ -22,36 +22,36 @@ Use the following commands to run the crawlers.
 
 Output as JSON file:
 ```
-scrapy crawl towncaredental -o towncaredental.json
+scrapy crawl towncaredental -o results/towncaredental.json
 ```
 
 Output as CSV file:
 ```
-scrapy crawl towncaredental -o towncaredental.csv -t csv
+scrapy crawl towncaredental -o results/towncaredental.csv -t csv
 ```
 
 ### Crawler 2
 
 Output as JSON file:
 ```
-scrapy crawl rickysalldaygrillcanada -o rickysalldaygrillcanada.json
+scrapy crawl rickysalldaygrillcanada -o results/rickysalldaygrillcanada.json
 ```
 
 Output as CSV file:
 ```
-scrapy crawl rickysalldaygrillcanada -o rickysalldaygrillcanada.csv -t csv
+scrapy crawl rickysalldaygrillcanada -o results/rickysalldaygrillcanada.csv -t csv
 ```
 
 ### Crawler 3
 
 Output as JSON file:
 ```
-scrapy crawl jockey -o jockey.json
+scrapy crawl jockey -o results/jockey.json
 ```
 
 Output as CSV file:
 ```
-scrapy crawl jockey -o jockey.csv -t csv
+scrapy crawl jockey -o results/jockey.csv -t csv
 ```
 
 
@@ -59,12 +59,12 @@ scrapy crawl jockey -o jockey.csv -t csv
 
 Output as JSON file:
 ```
-scrapy crawl rentking -o rentking.json
+scrapy crawl rentking -o results/rentking.json
 ```
 
 Output as CSV file:
 ```
-scrapy crawl rentking -o rentking.csv -t csv
+scrapy crawl rentking -o results/rentking.csv -t csv
 ```
 
 ## Resources
