@@ -8,7 +8,7 @@ interval to make sure it still works.
 
 See the `results` folder for the crawler output.
 
-## Notes
+## General Notes
 
 * Either crawler 1 or 2 was not working because the `robots.txt` was being misread. While the website's `robots.txt` 
   allowed the specific URL to be accessed by crawlers, `scapy` did not read that correctly.
@@ -19,71 +19,33 @@ See the `results` folder for the crawler output.
 
 Use the following commands to run the crawlers.
 
-### Crawler 1:
-
 Output as JSON file:
 ```
-scrapy crawl towncaredental -o results/towncaredental.json
+scrapy crawl <name> -o results/<name>.json
 ```
 
 Output as CSV file:
 ```
-scrapy crawl towncaredental -o results/towncaredental.csv -t csv
+scrapy crawl <name> -o results/<name>.csv -t csv
 ```
 
-### Crawler 2
+### Crawler Names
 
-Output as JSON file:
-```
-scrapy crawl rickysalldaygrillcanada -o results/rickysalldaygrillcanada.json
-```
+1. towncaredental
+2. rickysalldaygrillcanada
+3. jockey
+4. rentking
+5. uae_free
 
-Output as CSV file:
-```
-scrapy crawl rickysalldaygrillcanada -o results/rickysalldaygrillcanada.csv -t csv
-```
+## Notes 
 
-### Crawler 3
-
-Output as JSON file:
-```
-scrapy crawl jockey -o results/jockey.json
-```
-
-Output as CSV file:
-```
-scrapy crawl jockey -o results/jockey.csv -t csv
-```
-
-
-### Crawler 4
-
-Output as JSON file:
-```
-scrapy crawl rentking -o results/rentking.json
-```
-
-Output as CSV file:
-```
-scrapy crawl rentking -o results/rentking.csv -t csv
-```
-
-### Crawler 5
+### Crawler 5 "uae_free"
 
 * This crawler was created specifically to answer the StackOverflow.com question
 "[Crawl table data without 'next button' with Scrapy](https://stackoverflow.com/questions/62669269/crawl-table-data-without-next-button-with-scrapy)".
 * For help, I used the StackOverflow.com answer to the question 
 "[Crawling through pages with PostBack data javascript Python Scrapy](https://stackoverflow.com/a/28976674/6288413)".
 
-Output as JSON file:
-```
-scrapy crawl uae_free -o results/uae_free.json
-```
-
-Output as CSV file:
-```
-scrapy crawl uae_free -o results/uae_free.csv -t csv
-```
 
 ## Resources
 
