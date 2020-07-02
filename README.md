@@ -68,6 +68,23 @@ Output as CSV file:
 scrapy crawl rentking -o results/rentking.csv -t csv
 ```
 
+### Crawler 5
+
+* This crawler was created specifically to answer the StackOverflow.com question
+"[Crawl table data without 'next button' with Scrapy](https://stackoverflow.com/questions/62669269/crawl-table-data-without-next-button-with-scrapy)".
+* For help, I used the StackOverflow.com answer to the question 
+"[Crawling through pages with PostBack data javascript Python Scrapy](https://stackoverflow.com/a/28976674/6288413)".
+
+Output as JSON file:
+```
+scrapy crawl uae_free -o results/uae_free.json
+```
+
+Output as CSV file:
+```
+scrapy crawl uae_free -o results/uae_free.csv -t csv
+```
+
 ## Resources
 
 1.	ScraPy module for Python: <https://docs.scrapy.org/en/latest/>. Quick start-to-finish example: <https://www.codementor.io/andy995/writing-a-simple-web-scraper-using-scrapy-myb7vrmgx>
