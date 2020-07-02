@@ -34,3 +34,11 @@ class StoreItem(Item):
     distributor_name = Field()
     closed = Field()
     geo_accuracy = Field()
+
+
+class CompanyItem(Item):
+    company = Field()
+    company_link = Field()
+    zone = Field()
+    category = Field()
+    category_link = Field()

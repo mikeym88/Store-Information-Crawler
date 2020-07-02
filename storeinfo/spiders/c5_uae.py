@@ -1,5 +1,6 @@
 import scrapy
 from scrapy.http import FormRequest
+from storeinfo.items import CompanyItem
 
 
 class UAESpider(scrapy.Spider):
@@ -53,17 +54,15 @@ class UAESpider(scrapy.Spider):
 
         # Yield the companies
         # TODO: move this to a different function
-        rows = response.xpath('//table[@class="GridViewStyle"]//tr')
-        for row in rows[1:11]:
-            result = {
-                'company_name': row.xpath('.//td[2]//text()').get(),
-                'company_name_link': row.xpath('.//td[2]//a/@href').get(),
-                'zone': row.xpath('.//td[4]//text()').get(),
-                'category': row.xpath('.//td[6]//text()').get(),
-                'category_link': row.xpath('.//td[6]//a/@href').get()
-            }
-            print(result)
-            yield result
+        rows = response.xpath('//tr[@class="GridViewRowStyle"]')
+        for row in rows:
+            company = CompanyItem()
+            company['company'] = row.xpath('.//td[2]//text()').get()
+            company['company_link'] = row.xpath('.//td[2]//a/@href').get()
+            company['zone'] = row.xpath('.//td[4]//text()').get()
+            company['category'] = row.xpath('.//td[6]//text()').get()
+            company['category_link'] = row.xpath('.//td[6]//a/@href').get()
+            yield company
         else:
             new_request = FormRequest(url=response.request.url,
                                       method='POST',
@@ -72,6 +71,17 @@ class UAESpider(scrapy.Spider):
                                       meta={'page': self.current_page},
                                       dont_filter=True,
                                       headers=self.headers)
-            # TODO: check if there is a next page or if it is the last one, and only yield if there is one
 
-            yield new_request
+            # Check if the last page has been reached
+            last_page_number = response.xpath(
+                '(//table[@class="GridViewStyle"]//tr[@class="numbering"]//table//a)[last()]/text()'
+            ).get()
+            current_page_number = response.xpath(
+                '//table[@class="GridViewStyle"]//tr[@class="numbering"]//table//span/text()'
+            ).get()
+
+            # Continue only if there are more pages to be scraped
+            if last_page_number == ">>":
+                yield new_request
+            elif int(current_page_number) < int(last_page_number):
+                yield new_request
