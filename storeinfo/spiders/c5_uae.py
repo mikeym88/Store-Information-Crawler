@@ -11,8 +11,11 @@ class UAESpider(scrapy.Spider):
 
     allowed_domains = ['www.uaeonlinedirectory.com']
     # TODO: Include the urls for all other items (e.g. A-Z)
-    start_urls = ['https://www.uaeonlinedirectory.com/UFZOnlineDirectory.aspx?item=A']
     current_page = 0
+
+    def __init__(self, item='A'):
+        super(UAESpider, self).__init__()
+        self.start_urls = ['https://www.uaeonlinedirectory.com/UFZOnlineDirectory.aspx?item=%s' % item]
 
     def parse(self, response):
         # request the next page
@@ -62,11 +65,13 @@ class UAESpider(scrapy.Spider):
             print(result)
             yield result
         else:
+            new_request = FormRequest(url=response.request.url,
+                                      method='POST',
+                                      formdata=data,
+                                      callback=self.parse,
+                                      meta={'page': self.current_page},
+                                      dont_filter=True,
+                                      headers=self.headers)
             # TODO: check if there is a next page or if it is the last one, and only yield if there is one
-            yield FormRequest(url=response.request.url,
-                              method='POST',
-                              formdata=data,
-                              callback=self.parse,
-                              meta={'page': self.current_page},
-                              dont_filter=True,
-                              headers=self.headers)
+
+            yield new_request
