@@ -42,3 +42,4 @@ class CompanyItem(Item):
     zone = Field()
     category = Field()
     category_link = Field()
+
