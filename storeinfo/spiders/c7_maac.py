@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 import scrapy
 import string
-
+import re
 
 class MaacClubSpider(scrapy.Spider):
     name = "maac"
@@ -27,21 +27,45 @@ class MaacClubSpider(scrapy.Spider):
 
     def parse_maac_club_page(self, response):
         contact_xpath = '//p[./strong[contains(text(), "Club Contact:") or contains(text(), "Club Contacts:")]]/text()'
-        response_1 = response.meta["general_info"]
-        response_2 = {
-            "contact": response.xpath(contact_xpath).get(),
+        general_info = response.meta["general_info"]
+        specific_info = {
+            "Contact(s)": response.xpath(contact_xpath).get(),
             "url_1": response.xpath('//p[./strong[contains(text(), "Website:")]]/a/text()').get(),
             "url_2": response.xpath('//p[./strong[contains(text(), "Website:")]]/a/@href').get()
         }
-        if response_2["contact"]:
-            response_2["contact"] = response_2["contact"].strip().title()
-        if response_2["url_1"]:
-            response_2["url_1"] = response_2["url_1"].lower().strip()
-        if response_2["url_2"]:
-            response_2["url_2"] = response_2["url_2"].lower().strip()
-            if response_2["url_2"] == response_2["url_1"]:
-                response_2["url_2"] = None
-        results = response_1.copy()   # start with x's keys and values
-        results.update(response_2)
+        if specific_info["Contact(s)"]:
+            specific_info["Contact(s)"] = specific_info["Contact(s)"].strip().title()
+        if specific_info["url_1"]:
+            specific_info["url_1"] = specific_info["url_1"].lower().strip()
+        if specific_info["url_2"]:
+            specific_info["url_2"] = specific_info["url_2"].lower().strip()
+            if specific_info["url_2"] == specific_info["url_1"]:
+                specific_info["url_2"] = None
+        info = general_info.copy()   # start with x's keys and values
+        info.update(specific_info)
         # TODO: find out why {**x, **y} does not work
-        yield results
+        yield info
+
+        airfields_table_xpath = '//table[contains(.//th/text(), "Club Airfields")]//tr[@class="odd" or @class="even"]'
+        airfields = response.xpath(airfields_table_xpath)
+        for field in airfields:
+            club = general_info["Name"]  # Or this xpath can be used:
+            name = field.xpath('.//td/p/strong/text()').get()
+            coordinates = field.xpath('.//iframe/@src').get()
+            coordinates = re.search("(\?|\&)q=(?P<latitude>-?(\d|\.)+),(?P<longitude>-?(\d|\.)+)", coordinates)
+            if coordinates:
+                latitude = float(coordinates.group('latitude'))
+                longitude = float(coordinates.group('longitude'))
+            else:
+                latitude = None
+                longitude = None
+            airfield_type = field.xpath('.//td/p[starts-with(text(), "Type: ")]/text()').get()
+            if airfield_type:
+                airfield_type = airfield_type.replace("Type: ", "")
+            yield {
+                "Club": club.title(),
+                "Airfield Name": name.title(),
+                "Type": airfield_type,
+                "Latitude": latitude,
+                "Longitude": longitude
+            }
