@@ -59,7 +59,10 @@ class UAESpider(scrapy.Spider):
             company = CompanyItem()
             company['company'] = row.xpath('.//td[2]//text()').get()
             company['company_link'] = row.xpath('.//td[2]//a/@href').get()
-            company['zone'] = row.xpath('.//td[4]//text()').get()
+            zone = row.xpath('.//td[4]//text()').get()
+            if zone == "\u00a0":
+                zone = None
+            company['zone'] = zone
             company['category'] = row.xpath('.//td[6]//text()').get()
             company['category_link'] = row.xpath('.//td[6]//a/@href').get()
             yield company
