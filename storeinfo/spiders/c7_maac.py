@@ -17,7 +17,7 @@ class MaacClubSpider(scrapy.Spider):
             maac_url = self.base + cells[2].xpath("./a/@href").get()
 
             general_info = {
-                "Name": cells[0].xpath("./text()").get(),
+                "Name": cells[0].xpath("./text()").get().title(),
                 "Location": cells[1].xpath("./text()").get().title(),
                 "Region": region,
                 "MAAC Club URL": maac_url
@@ -56,9 +56,15 @@ class MaacClubSpider(scrapy.Spider):
             if coordinates:
                 latitude = float(coordinates.group('latitude'))
                 longitude = float(coordinates.group('longitude'))
+                skyvector = "https://skyvector.com/?ll=%f,%f&zoom=1" % (latitude, longitude)
+                google_maps = "http://google.com/maps?q=%f,%f" % (latitude, longitude)
+                bing_maps = "https://www.bing.com/maps?q=%f,%f" % (latitude, longitude)
             else:
                 latitude = None
                 longitude = None
+                skyvector = None
+                google_maps = None
+                bing_maps = None
             airfield_type = field.xpath('.//td/p[starts-with(text(), "Type: ")]/text()').get()
             if airfield_type:
                 airfield_type = airfield_type.replace("Type: ", "")
@@ -67,5 +73,8 @@ class MaacClubSpider(scrapy.Spider):
                 "Airfield Name": name.title(),
                 "Type": airfield_type,
                 "Latitude": latitude,
-                "Longitude": longitude
+                "Longitude": longitude,
+                "Skyvector Maps": skyvector,
+                "Google Maps": google_maps,
+                "Bing Maps": bing_maps
             }
