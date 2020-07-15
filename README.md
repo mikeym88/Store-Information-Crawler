@@ -1,7 +1,8 @@
 # Store Info Web Crawler
 
-This crawler fetches data from the websites of various chains in order to get information about their store locations.
-Information such as store name, phone number, operating hours, etc.
+This crawler fetches data from the websites of various websites (e.g. clubs, companies) in order to get information 
+about their store locations, clubs, or other company informaiton. Information such as store name, locations, 
+coordinates, phone number, operating hours, etc.
 
 This crawler was **last run successfully in June 2020**. The crawler would need to be tested and changed on a regular 
 interval to make sure it still works.
@@ -36,6 +37,13 @@ scrapy crawl <name> -o results/<name>.csv -t csv
 3. jockey
 4. rentking
 5. uae_free
+6. marketwatch_ipo
+7. maac
+
+## Pipelines
+
+* `XlsxWriterPipeline` will take the items from a spider and place them in an excel spreadsheet. If the spider yields
+  multiple items, they will be placed in separate sheets in the excel file.
 
 ## Notes 
 
