@@ -4,6 +4,7 @@ from scrapy.http import Request
 import random
 from datetime import datetime
 
+
 class MarketWatchSpider(scrapy.Spider):
     name = "marketwatch_ipo"
 
@@ -47,9 +48,12 @@ class MarketWatchSpider(scrapy.Spider):
 
     def parse(self, response):
         tabs = ["Recently Priced", "Upcoming Ipos", "Future Ipos", "Withdrawn"]
+        strip_string = lambda x: x.strip() if x else x
         for category in tabs:
-            xpath = '//div[contains(@data-tab-pane,"%s")]//tr[@class="table__row" and //td[@class="table__cell"]]' % category
-            entries = response.xpath(xpath)
+            header_xpath = '//div[contains(@data-tab-pane,"%s")]//tr[@class="table__row" and .//th]' % category
+            header = response.xpath(header_xpath)
+            body_xpath = '//div[contains(@data-tab-pane,"%s")]//tr[@class="table__row" and .//td[@class="table__cell"]]' % category
+            entries = response.xpath(body_xpath)
             for e in entries:
                 name = e.xpath("./td[1]/a/text()").get()
                 if not name:
@@ -68,10 +72,10 @@ class MarketWatchSpider(scrapy.Spider):
                 if week_of:
                     week_of = datetime.strptime(week_of, "%m/%d/%Y")
                 yield {
-                    "Company": name,
-                    "Symbol": symbol,
-                    "Exchange": exchange,
-                    "Price Range": price_range,
+                    "Company": strip_string(name),
+                    "Symbol": strip_string(symbol),
+                    "Exchange": strip_string(exchange),
+                    "Price Range": strip_string(price_range),
                     "Shares": shares,
                     "Week Of": week_of,
                     "Date Retrieved": datetime.now().strftime("%Y-%m-%d"),
