@@ -2,12 +2,7 @@
 
 This crawler fetches data from the websites of various websites (e.g. clubs, companies) in order to get information 
 about their store locations, clubs, or other company informaiton. Information such as store name, locations, 
-coordinates, phone number, operating hours, etc.
-
-This crawler was **last run successfully in June 2020**. The crawler would need to be tested and changed on a regular 
-interval to make sure it still works.
-
-See the `results` folder for the crawler output.
+coordinates, phone number, operating hours, etc. See the `results` folder for the crawler output.
 
 ## General Notes
 
@@ -30,15 +25,19 @@ Output as CSV file:
 scrapy crawl <name> -o results/<name>.csv -t csv
 ```
 
-### Crawler Names
+### Crawlers
 
-1. towncaredental
-2. rickysalldaygrillcanada
-3. jockey
-4. rentking
-5. uae_free
-6. marketwatch_ipo
-7. maac
+The crawlers would need to be tested and changed on a regular basis to make sure they still works.
+
+| Name | Last Ran |
+|:-----|:---------|
+| towncaredental | 2020-07-15 |
+| rickysalldaygrillcanada | 2020-07-15 |
+| jockey | 2020-07-15 |
+| rentking | 2020-07-15 |
+| uae_free | 2020-07-15 |
+| marketwatch_ipo | 2020-07-15 |
+| maac | 2020-07-15 |
 
 ## Pipelines
 
