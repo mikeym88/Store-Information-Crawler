@@ -30,8 +30,8 @@ class RentkingSpider(scrapy.Spider):
             item['city'] = store['city']
             item['state'] = store['state']
             item['zip_code'] = store['zip']
-            item['latitude'] = store['latitude']
-            item['longitude'] = store['longitude']
+            item['latitude'] = float(store['latitude'])
+            item['longitude'] = (store['longitude'])
             yield Request(url=response.urljoin(url),
                           headers=self.headers,
                           callback=self.parse_store,

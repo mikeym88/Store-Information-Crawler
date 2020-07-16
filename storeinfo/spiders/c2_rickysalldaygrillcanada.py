@@ -28,8 +28,8 @@ class rickysalldaygrillcanada(scrapy.Spider):
             item['zip_code'] = store["zip"]
             item['country'] = store["country"]
             item['phone_number'] = store["phone"]
-            item['latitude'] = store["lat"]
-            item['longitude'] = store["lng"]
+            item['latitude'] = float(store["lat"])
+            item['longitude'] = float(store["lng"])
 
             # Extract store hours
             hours_xpath = scrapy.Selector(text=store["hours"]).xpath("//tr")

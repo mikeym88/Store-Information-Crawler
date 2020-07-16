@@ -31,8 +31,8 @@ class JockeySpider(scrapy.Spider):
             item['zip_code'] = store['PostalCode']
             item['country'] = store['CountryCode']
             item['phone_number'] = store['MainPhone']
-            item['latitude'] = store['Latitude']
-            item['longitude'] = store['Longitude']
+            item['latitude'] = float(store['Latitude'])
+            item['longitude'] = float(store['Longitude'])
             item['store_hours'] = store['Hours']
 
             yield item
