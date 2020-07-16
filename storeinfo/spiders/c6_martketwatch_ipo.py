@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 import scrapy
 from scrapy.http import Request
 import random
-
+from datetime import datetime
 
 class MarketWatchSpider(scrapy.Spider):
     name = "marketwatch_ipo"
@@ -46,8 +46,35 @@ class MarketWatchSpider(scrapy.Spider):
         yield Request(url=url, headers=random.choice(headers))
 
     def parse(self, response):
-        entries = response.xpath('//div[contains(@data-tab-pane,"Upcoming Ipos")]//tr[@class="table__row" and //td[@class="table__cell"]]/td[2]/text()')
-        symbols = {"symbols": []}
-        for symbol in entries.getall():
-            symbols["symbols"].append(symbol)
-        yield symbols
+        tabs = ["Recently Priced", "Upcoming Ipos", "Future Ipos", "Withdrawn"]
+        for category in tabs:
+            xpath = '//div[contains(@data-tab-pane,"%s")]//tr[@class="table__row" and //td[@class="table__cell"]]' % category
+            entries = response.xpath(xpath)
+            for e in entries:
+                name = e.xpath("./td[1]/a/text()").get()
+                if not name:
+                    name = e.xpath("./td[1]/text()").get()
+                link = e.xpath("./td[1]/a/@href").get()
+                symbol = e.xpath('./td[2]/text()').get()
+                if not symbol:
+                    symbol = e.xpath('./td[2]//a/text()').get()
+
+                exchange = e.xpath('./td[3]/text()').get()
+                price_range = e.xpath('./td[4]/text()').get()
+                shares = e.xpath('./td[5]/text()').get()
+                if shares:
+                    shares = int(shares.replace(",", ""))
+                week_of = e.xpath('./td[6]/text()').get()
+                if week_of:
+                    week_of = datetime.strptime(week_of, "%m/%d/%Y")
+                yield {
+                    "Company": name,
+                    "Symbol": symbol,
+                    "Exchange": exchange,
+                    "Price Range": price_range,
+                    "Shares": shares,
+                    "Week Of": week_of,
+                    "Date Retrieved": datetime.now().strftime("%Y-%m-%d"),
+                    "Category": category,
+                    "Link": link
+                }
