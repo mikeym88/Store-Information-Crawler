@@ -1,7 +1,7 @@
 import scrapy
 from scrapy.http import FormRequest
 from storeinfo.items import CompanyItem
-
+import string
 
 class UAESpider(scrapy.Spider):
     name = 'uae_free'
@@ -10,19 +10,30 @@ class UAESpider(scrapy.Spider):
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.76 Safari/537.36'
     }
 
+    base_url = "https://www.uaeonlinedirectory.com/"
+
+    start_urls = ['https://www.uaeonlinedirectory.com/UFZOnlineDirectory.aspx?item=%s' % x
+                  for x in string.ascii_uppercase]
+
     allowed_domains = ['www.uaeonlinedirectory.com']
     # TODO: Include the urls for all other items (e.g. A-Z)
-    current_page = 0
 
-    def __init__(self, item='A'):
+    def __init__(self, item=None):
         super(UAESpider, self).__init__()
-        self.start_urls = ['https://www.uaeonlinedirectory.com/UFZOnlineDirectory.aspx?item=%s' % item]
+        if item:
+            if len(item) != 1 or item not in string.ascii_letters:
+                raise ValueError("Parameter 'item' must be a letter")
+            else:
+                self.start_urls = ['https://www.uaeonlinedirectory.com/UFZOnlineDirectory.aspx?item=%s' % item.upper()]
 
     def parse(self, response):
         # request the next page
-        self.current_page = self.current_page + 1
+        if "page" in response.meta.keys():
+            current_page = response.meta["page"] + 1
+        else:
+            current_page = 1
 
-        if self.current_page == 1:
+        if current_page == 1:
             # submit a form (first page)
             data = {}
             for form_input in response.css('form#aspnetForm input'):
@@ -43,7 +54,7 @@ class UAESpider(scrapy.Spider):
 
             data = {
                 '__EVENTTARGET': 'ctl00$ContentPlaceHolder2$grdDirectory',
-                '__EVENTARGUMENT': 'Page$%d' % self.current_page,
+                '__EVENTARGUMENT': 'Page$%d' % current_page,
                 '__EVENTVALIDATION': event_validation,
                 '__VIEWSTATE': view_state,
                 '__VIEWSTATEGENERATOR': view_state_generator,
@@ -58,20 +69,25 @@ class UAESpider(scrapy.Spider):
         for row in rows:
             company = CompanyItem()
             company['company'] = row.xpath('.//td[2]//text()').get()
-            company['company_link'] = row.xpath('.//td[2]//a/@href').get()
+            company['company_link'] = self.base_url + row.xpath('.//td[2]//a/@href').get()
+            company['po_box'] = row.xpath('.//td[3]//text()').get()
+            company['phone_number'] = row.xpath('.//td[5]//text()').get()
             zone = row.xpath('.//td[4]//text()').get()
             if zone == "\u00a0":
                 zone = None
             company['zone'] = zone
             company['category'] = row.xpath('.//td[6]//text()').get()
-            company['category_link'] = row.xpath('.//td[6]//a/@href').get()
+            if row.xpath('.//td[6]//a/text()').get():
+                company['category_link'] = self.base_url + row.xpath('.//td[6]//a/@href').get()
+            else:
+                company['category_link'] = None
             yield company
         else:
             new_request = FormRequest(url=response.request.url,
                                       method='POST',
                                       formdata=data,
                                       callback=self.parse,
-                                      meta={'page': self.current_page},
+                                      meta={'page': current_page},
                                       dont_filter=True,
                                       headers=self.headers)
 

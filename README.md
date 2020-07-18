@@ -35,7 +35,7 @@ The crawlers would need to be tested and changed on a regular basis to make sure
 | rickysalldaygrillcanada | 2020-07-15 |
 | jockey | 2020-07-15 |
 | rentking | 2020-07-15 |
-| uae_free | 2020-07-15 |
+| uae_free | 2020-07-18 |
 | marketwatch_ipo | 2020-07-15 |
 | maac | 2020-07-15 |
 
