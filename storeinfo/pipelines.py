@@ -26,17 +26,18 @@ class XlsxWriterPipeline:
         self.writer = pd.ExcelWriter(self.output_filename, engine='xlsxwriter')
 
     def close_spider(self, spider):
-        i = 1
+        sheet_number = 1
         for df_key in self.dataframes.keys():
             df = self.dataframes[df_key]
-            sheet_name = 'Sheet %d' % i
+            sheet_name = 'Sheet %d' % sheet_number
+            df.drop_duplicates(inplace=True)
             if spider.name == "maac" and "url_2" in df:
                 if df[df.url_2.notna()].isnull:
                     df = df.drop("url_2", 1)
                 df.to_excel(self.writer, index=False, sheet_name='MAAC Clubs', freeze_panes=(1, 0))
             else:
                 df.to_excel(self.writer, index=False, sheet_name=sheet_name, freeze_panes=(1, 0))
-            i += 1
+            sheet_number += 1
         self.writer.save()
 
     def process_item(self, item, spider):

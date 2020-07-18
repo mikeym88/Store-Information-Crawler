@@ -42,4 +42,5 @@ class CompanyItem(Item):
     zone = Field()
     category = Field()
     category_link = Field()
-
+    po_box = Field()
+    phone_number = Field()
